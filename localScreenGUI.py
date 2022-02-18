@@ -91,7 +91,7 @@ try:
         [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search')],
         # [sg.Radio(text='Film', group_id='filetype', key='-search-film'), sg.Radio(text='Document', group_id='filetype', key='-search-doc'), sg.Radio(text='Program', group_id='filetype', key='-search-program'), sg.Radio(text='Game', group_id='filetype', key='-search-game'), sg.Radio(text='All files', group_id='filetype', key='-search-alltypes', default=True)],
         # [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords in filename', group_id='filecategory', key='-search-bykeywords-filename'), sg.Radio(text='Keywords in Channel/Category/Name', group_id='filecategory', key='-search-bykeywords-channel')],
-        [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords', group_id='filecategory', key='-search-bykeywords')],
+        [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-all', default=True)],
         [sg.Table(values=searchTable, headings=searchHead, expand_y=True, expand_x=True, auto_size_columns=True, hide_vertical_scroll=False, display_row_numbers=False, key='-search-results')],
 
     ]
@@ -289,14 +289,16 @@ try:
         if event == '-rebuild-films-module': 
             fman.listRebuild(type='films')
         if event == '-search':
+            """
             if values['-search-byid']==True:
                 window['-search-results'].update(values=fileSearch.searchById(values['-search-input']))
-            """
             # if values['-search-bykeywords-channel']==True: #obsolete
             #     window['-search-results'].update(values=fileSearch.searchByChannel(values['-search-input'])) #obsolete
             """
-            if values['-search-bykeywords']==True:
-                window['-search-results'].update(values=fileSearch.searchByFilename(values['-search-input']))
+            if values['-search-byid']==True:
+                window['-search-results'].update(values=fileSearch.searchById(values['-search-input']))
+            if values['-search-all']==True:
+                window['-search-results'].update(values=fileSearch.search(values['-search-input']))
     window.close()
 except Exception as c:
     print(c)
