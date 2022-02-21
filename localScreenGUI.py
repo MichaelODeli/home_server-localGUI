@@ -38,6 +38,25 @@ try:
                     "BUTTON": ("#fafbfc", "#0a0f14"), "PROGRESS": ("#155398", "#1d2125"), "BORDER": 1, "SLIDER_DEPTH": 0, "PROGRESS_DEPTH": 0, }
     sg.theme_add_new('DarkGrey14Edit', DarkGrey14E)
     sg.theme('DarkGray14Edit')
+    #update feature
+    update = [
+        [sg.Text('Update your application')],
+        [sg.Text('Current version: '), sg.Text('0.0', key='-app-version-client')],
+        [sg.Text('Server version: '), sg.Text('0.0', key='-app-version-server')],
+        [sg.Text('GitHub version: '), sg.Text('0.0', key='-app-version-github')],
+        [sg.Button('Okey', key='-update-go-ahead')]
+    ]
+    updateWindow = sg.Window('Home center', update, no_titlebar=True, size=(200, 200), keep_on_top=True, font='Arial', background_color='#0a0f14').Finalize()
+    while True:
+        event, values = updateWindow.read(timeout=10)
+        if event!='__TIMEOUT__':
+            print(event, values)
+        if event == sg.WIN_CLOSED:           # always,  always give a way out!
+            break
+        if event == '-update-go-ahead':
+            break
+
+    #main layout
     logging.info('Icons and theme created.')
     mainLayout = [
         [sg.Text('Main page')],
