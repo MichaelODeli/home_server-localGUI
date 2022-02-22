@@ -1,3 +1,4 @@
+current_version = '0.2f1'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -13,10 +14,9 @@ try:
     import datetime
     import pymsgbox as pymsg
     from sys import platform as PLATFORM
-    import fileManager as fman
-    import fileSearch
+    import requests
+    import configparser
     logging.info('Other modules imported.')
-
     iconHome = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABGklEQVRYw+2TvRGCQBSEISAjpgFKoAZDxxlnTCAjJSOyAiILsAAzO3DoQDqgAEkl0oBZ7zlzJ4eiHD8GersJ8vDb6DMMHZ2vBiY2rOZUeAs7UHawpsDbOIDnAHtsvIMM9WRwxsS7yNFMDncsvIdCYI+sPAW8MfAzlAKZYsmait8lZkPxPq4Ct8cCc9YFe+K5wh+Cj1EJ1PYO592K9xXi/lI9IImEpya1cXX5hFSUC9ZPeOqaXXjU5JOkOiN6iadG7KounyTVCWErnhqyL9Tkk6TKEbzFUwPpe1dFKmD1EU9d1f7xXj5JKsq8Y+tpl0+Sqv9Am3ySVMMGPsv3NNCWxr27B3qg70DXux7QAz810EjXux4YPqCj82e5ASnAWRYMdgfqAAAAAElFTkSuQmCC'
     iconCPU = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAfElEQVRYw+2WsQ3AIAwE2YOZMqZHg4odPg1VJCe2hVGQ/qgQElfYmC+FkC1gou0pyBCgQtBhpUNQfdcPeBkOBQQRxC5oIUFzFxWXcXmLTsH3xU+BhnJOQVygFlkZduu6iAK26QHvgON6vyD900+PLdnBKz06Mr7/T0DIKzefCDRb+h01/QAAAABJRU5ErkJggg=='
     iconSettings = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACtUlEQVRYw+2Xu08UURTGNyGhpIEQwp9Bs9ZUJHJYVuSxCoYGMWiicUtCggEVjBqkAA1mky1I+BcoaLbSxNgQQGh5qg3LU8iSnwVnLndgZpZdZwoTzjRz73zn++7cxznnxmI39p8Y81y2+TDpq/Gy6vAE4p4C8fAEuj0FusMTGFbKaQThs7aGwxOYVcohBGFUW7PlkTWyyRyNpl3FIHml7EcQnmorzyBVlt8cmxd+fvSVrKr7KmlqaGXbmvV2BHGtyA5JakhbXpXBAmnXMp66WnkEQWjhTwAqHURfyy7etsMUKRUQ7vOJ3z7IXWr9BWYUdMCx5XLEWxKG3HmSfHD9ySF7+jbjR9/AmUJe0s4YawAs0nOF3Hl6+aGYUZK8Vu8zGrwFcgpYMuMdYMK895JhhX32WSFDr/beYZI+fU+wogw5L/om87NfdbdcPAmyFFwzXSB7Zdo6+W6+N10VuMWJ+byhO96hz3kuZ84l8ZAt8+XEM04RZ92CjBjXLH6WNZgX1vDWfcMgtSxY7s917gvGMUUddaTMQAq6Fs8sr4WAbRqLUcG4gT5CEDKGvtrKD45EBkHoMz7jVBSPRo7z+cFadlouTEp7lxGEDmcQ1wt3RwpvRRBzfOpdmHrt3UMQbjtHsjSBlmsLNJcm4ExRVwRTFPEiX9qm6ZC3qeugnTIW8kEjbkG2GCg5VPSxERgqrGD3jc6ygt1dvgQEOytcL+oGFfqZJBkYrhNM8MSk0qWAcO1KOCO08UrhSzzwTTg9LAKwxhs6TDnjl3CslJk3hw3gmPd6qt3T9u4S6qBIygxM+r+Y5p4h72KKn2Uk/SJly6HSN5tCrNSyxaPwSrJjOZ/H1zarZ5vWkgqvIqXjY1dgKKd0LFL8DiMIQ/9U/AaW7x8RhOnwy/fILyCRX6GivgRGfo29sUjtL+HgQz5j/Z6CAAAAAElFTkSuQmCC'
@@ -33,11 +33,182 @@ try:
     # original # iconExit = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAsElEQVRYw+3XvRHCMAyGYe0BY/CzGp2mSTZLKriwwUvDcUdhGywpgTt9vfMUUmRZJJNxDntGZnozM7Crf/6GNdcKwYhHhjIwuQBTGXimu4Kt8wmYARQNBFCAGmECuLzaUGOAA0uLMNaQY4uwNkmTMAMinLiXCQdAhHOZ+LjIX0SjgTfiLwH9rSJv3qbBP5rDqAgfdpuO6/ALZ4UrM9eWVYDw5Td8fY9+gIQ/oTKZrjwAm/oCnITJuaYAAAAASUVORK5CYII='
     iconExit = b'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAQAAAAm93DmAAAABGdBTUEAALGPC/xhBQAAAAJiS0dEAP+Hj8y/AAAAB3RJTUUH5gIJDzYwr5ioMQAAAehJREFUSMfllr1OG0EUhb/1zyIBCRFYKIIyfoJUkRHPkC6p4Q2oEFVChRAFDRJKE9dJirxDFlymj0QbKSIg8eMU9uIcCi+Z9YztGVubirPNanb3m3vvuTsz8OgUPdyoIFA0gCszT8VMEiBxR5ueQVVyD+d4ywZ1qsHhRqSc8ZHP/HEmUlmbutE0utGGynKAC0qmwknSNy08AE3KFV4AcEhCNTDllHW2gLrhGGBEDEDC14ns3QJiY2TelH7UVSybTXVs+0WWS66AJV8AAnhOPTRgD1AAq7zjmLWw5s+nPLyhl9lhk5hZtjnRyNfcCP9yySXXdKw3utm0DfZpWAUbl5pKWlRNNc1ocBytqqlUknSihtA/pNAbSdJv1dzGzl3OuEEmfeSEwCHXsj6ok49yFNCY8oRDno4skFjJ3FjjoG/PWHOEaroO/ncTvdSICL2NPalMyh2+eFJ+lf1oLXb47uEWZ8p/bJvCG3tRP3ShK722gM90pJ4k6XQQ5+vDEkssATNWeWPgjpgW27TAtzi4C6ytc/YoU+c9pz6YDRyiCMFPdpnnLATnBWbIXwGkIcB+ACljuttRmvvSAoouAOsw0TYK0HXmKm6jN4tDmya34bXK6ZYmbTflHp9g6sNSb9CIAo9zhR84H6HuAbCGTEdCaLm7AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIyLTAyLTA5VDE1OjU0OjQ0KzAwOjAwA5rT6QAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMi0wMi0wOVQxNTo1NDo0NCswMDowMHLHa1UAAAAASUVORK5CYII='
     iconSubs = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAwklEQVRYw+2WsQ3CMBBFs0dmQiBBQypEi2ABNoAFyAAuEBvQMANMAEVSOS1KEfQYgEQosr8I0j33fpLv/p2TxBgs9MQE8QXG//R/72KbwJps2AlIcZShRabEkbZf74mFb1HgiIn7FBRRBUV3wEaBpytwXwVrtQAuLLUCeHEiUwoAanJmSgFAxZ6JUgDwYKsVANzYaAVXpeCufCLPjrGqyE8OTFVt2nBkrgvamYVyVKzUwy54XMsXjnxlqpe+/Nti/Iw3Jof1QhWrfUAAAAAASUVORK5CYII='
+    # filenamager
+    def isVideoIDExist(id):
+        cfg = configparser.ConfigParser()
+        with open('settings.ini', 'r', encoding='utf-8') as fp:
+            cfg.read_file(fp)
+        if id[0]=='y' or id[0]=='f' or id[0]=='s':
+            if id[0]=='y':
+                libName = cfg.get('libs', 'youtubelib')
+                categ='youtube'
+            if id[0]=='f':
+                libName = cfg.get('libs', 'filmslib')
+                categ='films'
+            if id[0]=='s':
+                libName = cfg.get('libs', 'serialslib')
+                categ='serials'
+            with open(libName, 'r', encoding='utf-8') as fp:
+                cfg.read_file(fp)
+            if cfg.has_option(categ, id)==True:
+                return True
+            else:
+                return False
+        else: 
+            return False
 
+    def getLinkId(id):
+        cfg = configparser.ConfigParser()
+        with open('settings.ini', 'r', encoding='utf-8') as fp:
+            cfg.read_file(fp)
+        # wayConf = cfg.get('settings', 'way')
+        wayConf = cfg.get('links', 'webdir')+cfg.get('settings', 'storageFolder')+'/'
+        if id[0]=='y' or id[0]=='f' or id[0]=='s':
+            if id[0]=='y':
+                libName = cfg.get('libs', 'youtubelib')
+                wayConf=wayConf+'youtube/'
+                categ='youtube'
+            if id[0]=='f':
+                libName = cfg.get('libs', 'filmslib')
+                wayConf=wayConf+'films/'
+                categ='films'
+            if id[0]=='s':
+                libName = cfg.get('libs', 'serialslib')
+                wayConf=wayConf+'serials/'
+                categ='serials'
+            with open(libName, 'r', encoding='utf-8') as fp:
+                cfg.read_file(fp)
+            fullway = wayConf + cfg.get(categ, id)
+            return fullway
+        else: 
+            return False
+    
+    def searchById(id):
+        if isVideoIDExist(id)==True:
+            cfg = configparser.ConfigParser()
+            with open('settings.ini', 'r', encoding='utf-8') as fp:
+                cfg.read_file(fp)
+            wayConf = cfg.get('settings', 'way')
+            if id[0]=='y' or id[0]=='f' or id[0]=='s':
+                if id[0]=='y':
+                    libName = cfg.get('libs', 'youtubelib')
+                    wayConf=wayConf+'youtube/'
+                    categ='youtube'
+                if id[0]=='f':
+                    libName = cfg.get('libs', 'filmslib')
+                    wayConf=wayConf+'films/'
+                    categ='films'
+                if id[0]=='s':
+                    libName = cfg.get('libs', 'serialslib')
+                    wayConf=wayConf+'serials/'
+                    categ='serials'
+                with open(libName, 'r', encoding='utf-8') as fp:
+                    cfg.read_file(fp)
+                fullway = wayConf + cfg.get(categ, id)
+                return [
+                    [categ, id, cfg.get(categ, id).split('/')[0], cfg.get(categ, id).split('/')[1]]
+                ]
+        else:
+            return [['Not found']]
+    def confReaderOptions(name):
+        cfg = configparser.ConfigParser()
+        if name == 'storageLib_Films.ini':
+            cats = 'films'
+        if name == 'storageLib_Yt.ini':
+            cats = 'youtube'
+        if name == 'storageLib_Serials.ini':
+            cats = 'serials'
+        with open(name, 'r', encoding='utf-8') as fp:
+            cfg.read_file(fp)
+        return(cfg.items(cats, raw=True))
+
+    def search(filename):
+        cfg = configparser.ConfigParser()
+        with open('settings.ini', 'r', encoding='utf-8') as fp:
+            cfg.read_file(fp)
+        filename = filename.lower().replace(' ', '-')
+        libNames = [cfg.get('libs', 'youtubelib'), cfg.get('libs', 'serialslib'), cfg.get('libs', 'filmslib')]
+        founded = []
+        for n in libNames:
+            g = confReaderOptions(n)
+            for f in g:
+                if filename.lower() in f[1].lower():
+                    foundName = f[1]
+                    id = f[0]
+                    founded.append([id, foundName])
+                if filename.lower() in f[0].lower():
+                    foundName = f[1]
+                    id = f[0]
+                    founded.append([id, foundName])
+        fidex = []
+        if founded!=[]:
+            for naming in founded:
+                id = naming[0]
+                if id[0]=='y':
+                    categ='youtube'
+                if id[0]=='f':
+                    categ='films'
+                if id[0]=='s':
+                    categ='serials'
+                channel = naming[1].split('/')[0]
+                filename = naming[1].split('/')[1]
+                fidex.append([categ, id, channel, filename])
+            return(fidex)
+        else: return[['Not found']]
     DarkGrey14E={"BACKGROUND": "#24292e", "TEXT": "#fafbfc", "INPUT": "#1d2125", "TEXT_INPUT": "#fafbfc", "SCROLL": "#1d2125",
                     "BUTTON": ("#fafbfc", "#0a0f14"), "PROGRESS": ("#155398", "#1d2125"), "BORDER": 1, "SLIDER_DEPTH": 0, "PROGRESS_DEPTH": 0, }
     sg.theme_add_new('DarkGrey14Edit', DarkGrey14E)
     sg.theme('DarkGray14Edit')
+    #update feature
+    cfg = configparser.ConfigParser()
+    with open('settings.ini', 'r', encoding='utf-8') as fp:
+        cfg.read_file(fp)
+    filed = requests.get(cfg.get('links', 'githubdir'))
+    gitHubversion = filed.text.split('\n')[0].replace('current_version = ', '').replace("'", '')
+
+    ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtubelib')
+    serialslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'serialslib')
+    filmslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'filmslib')
+    liblist = [ytlib, serialslib, filmslib]
+    todownload = []
+    for lib in liblist:
+        filenam = lib.split('/')[-1]
+        try:
+            with open(filenam, 'r', encoding='utf-8') as fpe:
+                texted = fpe.read()
+            if requests.get(lib).text.split() == texted.split():
+                pass
+            else:
+                todownload.append(lib)
+        except:
+            todownload.append(lib)
+    if todownload != []:
+        for naming in todownload:
+            libname = naming.split('/')[-1]
+            f = open(libname, 'w')
+            texting = requests.get(naming).text
+            f.write(texting)
+            f.close()
+
+
+    update = [
+        [sg.Text('Update your application')],
+        [sg.Text('Current version: '), sg.Text(current_version, key='-app-version-client')],
+        # [sg.Text('Server version: '), sg.Text('0.0', key='-app-version-server')],
+        [sg.Text('GitHub version: '), sg.Text(gitHubversion, key='-app-version-github')],
+        [sg.Button('Okay', key='-update-go-ahead')]
+    ]
+    updateWindow = sg.Window('Home center', update, no_titlebar=True, size=(200, 200), keep_on_top=True, font='Arial', background_color='#0a0f14').Finalize()
+    while True:
+        event, values = updateWindow.read(timeout=10)
+        if event!='__TIMEOUT__':
+            print(event, values)
+        if event == sg.WIN_CLOSED:           # always,  always give a way out!
+            break
+        if event == '-update-go-ahead':
+            break
+
+    #main layout
     logging.info('Icons and theme created.')
     mainLayout = [
         [sg.Text('Main page')],
@@ -88,7 +259,7 @@ try:
     searchLayout = [
         # use screen keyboard
         [sg.Text('Video search')],
-        [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search')],
+        [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search'), sg.Button('Reload libs', key='-download-libs'),],
         # [sg.Radio(text='Film', group_id='filetype', key='-search-film'), sg.Radio(text='Document', group_id='filetype', key='-search-doc'), sg.Radio(text='Program', group_id='filetype', key='-search-program'), sg.Radio(text='Game', group_id='filetype', key='-search-game'), sg.Radio(text='All files', group_id='filetype', key='-search-alltypes', default=True)],
         # [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords in filename', group_id='filecategory', key='-search-bykeywords-filename'), sg.Radio(text='Keywords in Channel/Category/Name', group_id='filecategory', key='-search-bykeywords-channel')],
         [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-all', default=True)],
@@ -112,8 +283,6 @@ try:
     ]
 
     videoNumsTwo = [
-        [sg.Text('List rebuild')],
-        [sg.Button('YT', key='-rebuild-youtube-module'), sg.Button('Film', key='-rebuild-films-module'), sg.Button('Serial', key='-rebuild-serial-module')],
         # [sg.Button('Keywords maker', key='-keywords-maker', expand_x=True)],
         [sg.Text('Input box')],
         [sg.Button('Y', key='-video-y', size=(3, 1)), sg.Button('F', key='-video-film', size=(3, 1)), sg.Button('S', key='-video-serial', size=(3, 1))],
@@ -238,8 +407,8 @@ try:
                     window['-video-id-link'].update('URL or Video ID')
                 # else: pymsg.alert(title='Warning!', text='File not found')
                 else: 
-                    if fman.isVideoIDExist(values['-video-id-link']):
-                        media_list.add_media(fman.getLinkId(values['-video-id-link']))
+                    if isVideoIDExist(values['-video-id-link']):
+                        media_list.add_media(getLinkId(values['-video-id-link']))
                     else:
                         pymsg.alert(title='Warning!', text='File not found')
         if event == '-video-clear':
@@ -282,23 +451,17 @@ try:
         if event == '-video-delchar':
             if values['-toinput-vids']==True: oldinf = values['-video-id-link']; window['-video-id-link'].update(oldinf[:-1])
             else: oldinf = values['-torrent-row-number']; window['-torrent-row-number'].update(oldinf[:-1])
-        if event == '-rebuild-youtube-module': 
-            fman.listRebuild(type='youtube')
-        if event == '-rebuild-serial-module': 
-            fman.listRebuild(type='serials')
-        if event == '-rebuild-films-module': 
-            fman.listRebuild(type='films')
         if event == '-search':
             """
             if values['-search-byid']==True:
-                window['-search-results'].update(values=fileSearch.searchById(values['-search-input']))
+                window['-search-results'].update(values=searchById(values['-search-input']))
             # if values['-search-bykeywords-channel']==True: #obsolete
-            #     window['-search-results'].update(values=fileSearch.searchByChannel(values['-search-input'])) #obsolete
+            #     window['-search-results'].update(values=searchByChannel(values['-search-input'])) #obsolete
             """
             if values['-search-byid']==True:
-                window['-search-results'].update(values=fileSearch.searchById(values['-search-input']))
+                window['-search-results'].update(values=searchById(values['-search-input']))
             if values['-search-all']==True:
-                window['-search-results'].update(values=fileSearch.search(values['-search-input']))
+                window['-search-results'].update(values=search(values['-search-input']))
     window.close()
 except Exception as c:
     print(c)
