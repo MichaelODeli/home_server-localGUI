@@ -1,4 +1,4 @@
-current_version = '0.2'
+current_version = '0.2f1'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -14,7 +14,6 @@ try:
     import datetime
     import pymsgbox as pymsg
     from sys import platform as PLATFORM
-    import fileSearch
     import requests
     import configparser
     logging.info('Other modules imported.')
@@ -455,14 +454,14 @@ try:
         if event == '-search':
             """
             if values['-search-byid']==True:
-                window['-search-results'].update(values=fileSearch.searchById(values['-search-input']))
+                window['-search-results'].update(values=searchById(values['-search-input']))
             # if values['-search-bykeywords-channel']==True: #obsolete
-            #     window['-search-results'].update(values=fileSearch.searchByChannel(values['-search-input'])) #obsolete
+            #     window['-search-results'].update(values=searchByChannel(values['-search-input'])) #obsolete
             """
             if values['-search-byid']==True:
-                window['-search-results'].update(values=fileSearch.searchById(values['-search-input']))
+                window['-search-results'].update(values=searchById(values['-search-input']))
             if values['-search-all']==True:
-                window['-search-results'].update(values=fileSearch.search(values['-search-input']))
+                window['-search-results'].update(values=search(values['-search-input']))
     window.close()
 except Exception as c:
     print(c)
