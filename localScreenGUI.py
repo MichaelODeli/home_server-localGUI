@@ -1,4 +1,4 @@
-current_version = '0.2f1'
+current_version_client = '0.2f2'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -110,6 +110,7 @@ try:
                 ]
         else:
             return [['Not found']]
+
     def confReaderOptions(name):
         cfg = configparser.ConfigParser()
         if name == 'storageLib_Films.ini':
@@ -163,8 +164,16 @@ try:
     cfg = configparser.ConfigParser()
     with open('settings.ini', 'r', encoding='utf-8') as fp:
         cfg.read_file(fp)
-    filed = requests.get(cfg.get('links', 'githubdir'))
-    gitHubversion = filed.text.split('\n')[0].replace('current_version = ', '').replace("'", '')
+    try:
+        filed = requests.get(cfg.get('links', 'githubdir'))
+        gitHubversion_client = filed.text.split('\n')[0].replace('current_version_client = ', '').replace("'", '')
+        gitHubversion_client = filed.text.split('\n')[0].replace('current_version = ', '').replace("'", '')
+    except requests.exceptions.ConnectionError:
+        gitHubversion_client = 'Could not connect'
+    if str(current_version_client) == str(gitHubversion_client):
+        back_client = '#0a0f14'
+    else:
+        back_client = '#00406b'
 
     ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtubelib')
     serialslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'serialslib')
@@ -190,15 +199,33 @@ try:
             f.write(texting)
             f.close()
 
+    # update = [
+    #     [sg.Text('Update your application')],
+    #     [sg.Text('Current client version: '), sg.Text(current_version, key='-app-version-client')],
+    #     [sg.Text('GitHub client version: '), sg.Text(gitHubversion, key='-app-version-client-github')],
+    #     [sg.Text('Current server version: '), sg.Text('0.0', key='-app-version-server')],
+    #     [sg.Text('GitHub server version: '), sg.Text('0.0', key='-app-version-server-github')],
+    #     [sg.Button('Okay', key='-update-go-ahead')]
+    # ]
 
-    update = [
-        [sg.Text('Update your application')],
-        [sg.Text('Current version: '), sg.Text(current_version, key='-app-version-client')],
-        # [sg.Text('Server version: '), sg.Text('0.0', key='-app-version-server')],
-        [sg.Text('GitHub version: '), sg.Text(gitHubversion, key='-app-version-github')],
-        [sg.Button('Okay', key='-update-go-ahead')]
+    updateone = [
+        [sg.Text('Current client version: ', background_color='#0a0f14')],
+        [sg.Text('GitHub client version: ', background_color='#0a0f14')],
+        [sg.Text('Current server version: ', background_color='#0a0f14')],
+        [sg.Text('GitHub server version: ', background_color='#0a0f14')],
     ]
-    updateWindow = sg.Window('Home center', update, no_titlebar=True, size=(200, 200), keep_on_top=True, font='Arial', background_color='#0a0f14').Finalize()
+    updatetwo = [
+        [sg.Text(current_version_client, key='-app-version-client', background_color=back_client)],
+        [sg.Text(gitHubversion_client, key='-app-version-client-github', background_color=back_client)],
+        [sg.Text('0.0', key='-app-version-server', background_color='#0a0f14')],
+        [sg.Text('0.0', key='-app-version-server-github', background_color='#0a0f14')],
+    ]
+    update = [
+        [sg.Text('Application update', background_color='#0a0f14')],
+        [sg.Column(updateone, background_color='#0a0f14'), sg.Column(updatetwo, background_color='#0a0f14')],
+        [sg.Button('Okay', key='-update-go-ahead', expand_x=True), sg.Button('Exit', key='-update-exit', expand_x=True)]
+    ]
+    updateWindow = sg.Window('Home center', update, no_titlebar=True, keep_on_top=True, font='Arial', background_color='#0a0f14').Finalize()
     while True:
         event, values = updateWindow.read(timeout=10)
         if event!='__TIMEOUT__':
@@ -207,6 +234,8 @@ try:
             break
         if event == '-update-go-ahead':
             break
+        if event == '-update-exit':
+            exit()
 
     #main layout
     logging.info('Icons and theme created.')
