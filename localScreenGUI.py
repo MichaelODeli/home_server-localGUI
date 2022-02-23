@@ -1,4 +1,4 @@
-current_version_client = '0.2f2'
+current_version_client = '0.2f4'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -111,19 +111,22 @@ try:
         else:
             return [['Not found']]
 
-    def confReaderOptions(name):
+    def confReaderOptions(name, type):
+        if type == 'keywords':
+            cats = 'keywords'
+        if type == 'filename':
+            if name == 'storageLib_Films.ini':
+                cats = 'films'
+            if name == 'storageLib_Yt.ini':
+                cats = 'youtube'
+            if name == 'storageLib_Serials.ini':
+                cats = 'serials'
         cfg = configparser.ConfigParser()
-        if name == 'storageLib_Films.ini':
-            cats = 'films'
-        if name == 'storageLib_Yt.ini':
-            cats = 'youtube'
-        if name == 'storageLib_Serials.ini':
-            cats = 'serials'
         with open(name, 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         return(cfg.items(cats, raw=True))
 
-    def search(filename):
+    def search(filename, type):
         cfg = configparser.ConfigParser()
         with open('settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
@@ -131,7 +134,7 @@ try:
         libNames = [cfg.get('libs', 'youtubelib'), cfg.get('libs', 'serialslib'), cfg.get('libs', 'filmslib')]
         founded = []
         for n in libNames:
-            g = confReaderOptions(n)
+            g = confReaderOptions(n, type)
             for f in g:
                 if filename.lower() in f[1].lower():
                     foundName = f[1]
@@ -156,6 +159,7 @@ try:
                 fidex.append([categ, id, channel, filename])
             return(fidex)
         else: return[['Not found']]
+
     DarkGrey14E={"BACKGROUND": "#24292e", "TEXT": "#fafbfc", "INPUT": "#1d2125", "TEXT_INPUT": "#fafbfc", "SCROLL": "#1d2125",
                     "BUTTON": ("#fafbfc", "#0a0f14"), "PROGRESS": ("#155398", "#1d2125"), "BORDER": 1, "SLIDER_DEPTH": 0, "PROGRESS_DEPTH": 0, }
     sg.theme_add_new('DarkGrey14Edit', DarkGrey14E)
@@ -166,14 +170,10 @@ try:
         cfg.read_file(fp)
     try:
         filed = requests.get(cfg.get('links', 'githubdir'))
-        gitHubversion_client = filed.text.split('\n')[0].replace('current_version_client = ', '').replace("'", '')
-        gitHubversion_client = filed.text.split('\n')[0].replace('current_version = ', '').replace("'", '')
+        gitHubversion_client = str(filed.text.split('\n')[0].replace('current_version_client = ', '').replace("'", ''))
     except requests.exceptions.ConnectionError:
         gitHubversion_client = 'Could not connect'
-    if str(current_version_client) == str(gitHubversion_client):
-        back_client = '#0a0f14'
-    else:
-        back_client = '#00406b'
+    back_client = '#0a0f14'
 
     ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtubelib')
     serialslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'serialslib')
@@ -194,20 +194,10 @@ try:
     if todownload != []:
         for naming in todownload:
             libname = naming.split('/')[-1]
-            f = open(libname, 'w')
+            f = open(libname, 'w', encoding='utf-8')
             texting = requests.get(naming).text
             f.write(texting)
             f.close()
-
-    # update = [
-    #     [sg.Text('Update your application')],
-    #     [sg.Text('Current client version: '), sg.Text(current_version, key='-app-version-client')],
-    #     [sg.Text('GitHub client version: '), sg.Text(gitHubversion, key='-app-version-client-github')],
-    #     [sg.Text('Current server version: '), sg.Text('0.0', key='-app-version-server')],
-    #     [sg.Text('GitHub server version: '), sg.Text('0.0', key='-app-version-server-github')],
-    #     [sg.Button('Okay', key='-update-go-ahead')]
-    # ]
-
     updateone = [
         [sg.Text('Current client version: ', background_color='#0a0f14')],
         [sg.Text('GitHub client version: ', background_color='#0a0f14')],
@@ -244,9 +234,9 @@ try:
         [sg.Text('+ Stats')],
         [sg.Text('- Settings')],
         [sg.Text('- Torrents')],
-        [sg.Text('- Search')],
+        [sg.Text('+ Search')],
         [sg.Text('- Music')],
-        [sg.Text('+ Video (to-do - id play)')],
+        [sg.Text('+ Video')],
         [sg.Text('- Life')],
         [sg.Text('- Subscriptions')],
     ]
@@ -291,7 +281,7 @@ try:
         [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search'), sg.Button('Reload libs', key='-download-libs'),],
         # [sg.Radio(text='Film', group_id='filetype', key='-search-film'), sg.Radio(text='Document', group_id='filetype', key='-search-doc'), sg.Radio(text='Program', group_id='filetype', key='-search-program'), sg.Radio(text='Game', group_id='filetype', key='-search-game'), sg.Radio(text='All files', group_id='filetype', key='-search-alltypes', default=True)],
         # [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords in filename', group_id='filecategory', key='-search-bykeywords-filename'), sg.Radio(text='Keywords in Channel/Category/Name', group_id='filecategory', key='-search-bykeywords-channel')],
-        [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-all', default=True)],
+        [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-keywords-and-id', default=True), sg.Radio(text='Filename and ID', group_id='filecategory', key='-search-filename-and-id', default=True)],
         [sg.Table(values=searchTable, headings=searchHead, expand_y=True, expand_x=True, auto_size_columns=True, hide_vertical_scroll=False, display_row_numbers=False, key='-search-results')],
 
     ]
@@ -489,8 +479,10 @@ try:
             """
             if values['-search-byid']==True:
                 window['-search-results'].update(values=searchById(values['-search-input']))
-            if values['-search-all']==True:
-                window['-search-results'].update(values=search(values['-search-input']))
+            if values['-search-keywords-and-id']==True:
+                window['-search-results'].update(values=search(values['-search-input'], type='keywords'))
+            if values['-search-filename-and-id']==True:
+                window['-search-results'].update(values=search(values['-search-input'], type='filename'))
     window.close()
 except Exception as c:
     print(c)
