@@ -1,9 +1,9 @@
-current_version_client = '0.2f4'
+current_version_client = '0.4'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
-logging.info('App launched.')
-logging.info('Logging module imported.')
+logging.info('main-app; App launched.')
+logging.info('main-app; Logging module imported.')
 try:
     import PySimpleGUI as sg
     import psutil
@@ -16,7 +16,7 @@ try:
     from sys import platform as PLATFORM
     import requests
     import configparser
-    logging.info('Other modules imported.')
+    logging.info('main-app; Other modules imported.')
     iconHome = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAABGklEQVRYw+2TvRGCQBSEISAjpgFKoAZDxxlnTCAjJSOyAiILsAAzO3DoQDqgAEkl0oBZ7zlzJ4eiHD8GersJ8vDb6DMMHZ2vBiY2rOZUeAs7UHawpsDbOIDnAHtsvIMM9WRwxsS7yNFMDncsvIdCYI+sPAW8MfAzlAKZYsmait8lZkPxPq4Ct8cCc9YFe+K5wh+Cj1EJ1PYO592K9xXi/lI9IImEpya1cXX5hFSUC9ZPeOqaXXjU5JOkOiN6iadG7KounyTVCWErnhqyL9Tkk6TKEbzFUwPpe1dFKmD1EU9d1f7xXj5JKsq8Y+tpl0+Sqv9Am3ySVMMGPsv3NNCWxr27B3qg70DXux7QAz810EjXux4YPqCj82e5ASnAWRYMdgfqAAAAAElFTkSuQmCC'
     iconCPU = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAfElEQVRYw+2WsQ3AIAwE2YOZMqZHg4odPg1VJCe2hVGQ/qgQElfYmC+FkC1gou0pyBCgQtBhpUNQfdcPeBkOBQQRxC5oIUFzFxWXcXmLTsH3xU+BhnJOQVygFlkZduu6iAK26QHvgON6vyD900+PLdnBKz06Mr7/T0DIKzefCDRb+h01/QAAAABJRU5ErkJggg=='
     iconSettings = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAACtUlEQVRYw+2Xu08UURTGNyGhpIEQwp9Bs9ZUJHJYVuSxCoYGMWiicUtCggEVjBqkAA1mky1I+BcoaLbSxNgQQGh5qg3LU8iSnwVnLndgZpZdZwoTzjRz73zn++7cxznnxmI39p8Y81y2+TDpq/Gy6vAE4p4C8fAEuj0FusMTGFbKaQThs7aGwxOYVcohBGFUW7PlkTWyyRyNpl3FIHml7EcQnmorzyBVlt8cmxd+fvSVrKr7KmlqaGXbmvV2BHGtyA5JakhbXpXBAmnXMp66WnkEQWjhTwAqHURfyy7etsMUKRUQ7vOJ3z7IXWr9BWYUdMCx5XLEWxKG3HmSfHD9ySF7+jbjR9/AmUJe0s4YawAs0nOF3Hl6+aGYUZK8Vu8zGrwFcgpYMuMdYMK895JhhX32WSFDr/beYZI+fU+wogw5L/om87NfdbdcPAmyFFwzXSB7Zdo6+W6+N10VuMWJ+byhO96hz3kuZ84l8ZAt8+XEM04RZ92CjBjXLH6WNZgX1vDWfcMgtSxY7s917gvGMUUddaTMQAq6Fs8sr4WAbRqLUcG4gT5CEDKGvtrKD45EBkHoMz7jVBSPRo7z+cFadlouTEp7lxGEDmcQ1wt3RwpvRRBzfOpdmHrt3UMQbjtHsjSBlmsLNJcm4ExRVwRTFPEiX9qm6ZC3qeugnTIW8kEjbkG2GCg5VPSxERgqrGD3jc6ygt1dvgQEOytcL+oGFfqZJBkYrhNM8MSk0qWAcO1KOCO08UrhSzzwTTg9LAKwxhs6TDnjl3CslJk3hw3gmPd6qt3T9u4S6qBIygxM+r+Y5p4h72KKn2Uk/SJly6HSN5tCrNSyxaPwSrJjOZ/H1zarZ5vWkgqvIqXjY1dgKKd0LFL8DiMIQ/9U/AaW7x8RhOnwy/fILyCRX6GivgRGfo29sUjtL+HgQz5j/Z6CAAAAAElFTkSuQmCC'
@@ -33,27 +33,21 @@ try:
     # original # iconExit = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAsElEQVRYw+3XvRHCMAyGYe0BY/CzGp2mSTZLKriwwUvDcUdhGywpgTt9vfMUUmRZJJNxDntGZnozM7Crf/6GNdcKwYhHhjIwuQBTGXimu4Kt8wmYARQNBFCAGmECuLzaUGOAA0uLMNaQY4uwNkmTMAMinLiXCQdAhHOZ+LjIX0SjgTfiLwH9rSJv3qbBP5rDqAgfdpuO6/ALZ4UrM9eWVYDw5Td8fY9+gIQ/oTKZrjwAm/oCnITJuaYAAAAASUVORK5CYII='
     iconExit = b'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAQAAAAm93DmAAAABGdBTUEAALGPC/xhBQAAAAJiS0dEAP+Hj8y/AAAAB3RJTUUH5gIJDzYwr5ioMQAAAehJREFUSMfllr1OG0EUhb/1zyIBCRFYKIIyfoJUkRHPkC6p4Q2oEFVChRAFDRJKE9dJirxDFlymj0QbKSIg8eMU9uIcCi+Z9YztGVubirPNanb3m3vvuTsz8OgUPdyoIFA0gCszT8VMEiBxR5ueQVVyD+d4ywZ1qsHhRqSc8ZHP/HEmUlmbutE0utGGynKAC0qmwknSNy08AE3KFV4AcEhCNTDllHW2gLrhGGBEDEDC14ns3QJiY2TelH7UVSybTXVs+0WWS66AJV8AAnhOPTRgD1AAq7zjmLWw5s+nPLyhl9lhk5hZtjnRyNfcCP9yySXXdKw3utm0DfZpWAUbl5pKWlRNNc1ocBytqqlUknSihtA/pNAbSdJv1dzGzl3OuEEmfeSEwCHXsj6ok49yFNCY8oRDno4skFjJ3FjjoG/PWHOEaroO/ncTvdSICL2NPalMyh2+eFJ+lf1oLXb47uEWZ8p/bJvCG3tRP3ShK722gM90pJ4k6XQQ5+vDEkssATNWeWPgjpgW27TAtzi4C6ytc/YoU+c9pz6YDRyiCMFPdpnnLATnBWbIXwGkIcB+ACljuttRmvvSAoouAOsw0TYK0HXmKm6jN4tDmya34bXK6ZYmbTflHp9g6sNSb9CIAo9zhR84H6HuAbCGTEdCaLm7AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIyLTAyLTA5VDE1OjU0OjQ0KzAwOjAwA5rT6QAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMi0wMi0wOVQxNTo1NDo0NCswMDowMHLHa1UAAAAASUVORK5CYII='
     iconSubs = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAwklEQVRYw+2WsQ3CMBBFs0dmQiBBQypEi2ABNoAFyAAuEBvQMANMAEVSOS1KEfQYgEQosr8I0j33fpLv/p2TxBgs9MQE8QXG//R/72KbwJps2AlIcZShRabEkbZf74mFb1HgiIn7FBRRBUV3wEaBpytwXwVrtQAuLLUCeHEiUwoAanJmSgFAxZ6JUgDwYKsVANzYaAVXpeCufCLPjrGqyE8OTFVt2nBkrgvamYVyVKzUwy54XMsXjnxlqpe+/Nti/Iw3Jof1QhWrfUAAAAAASUVORK5CYII='
-    # filenamager
+    logging.info('main-app; Icons and theme created.')
+    # filemanager
     def isVideoIDExist(id):
         cfg = configparser.ConfigParser()
         with open('settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
-        if id[0]=='y' or id[0]=='f' or id[0]=='s':
-            if id[0]=='y':
-                libName = cfg.get('libs', 'youtubelib')
-                categ='youtube'
-            if id[0]=='f':
-                libName = cfg.get('libs', 'filmslib')
-                categ='films'
-            if id[0]=='s':
-                libName = cfg.get('libs', 'serialslib')
-                categ='serials'
+        if cfg.has_option('prefixes', id[0])==True:
+            categ = cfg.get('prefixes', id[0])
+            libName = cfg.get('libs', categ)
             with open(libName, 'r', encoding='utf-8') as fp:
                 cfg.read_file(fp)
-            if cfg.has_option(categ, id)==True:
-                return True
-            else:
-                return False
+                if cfg.has_option(categ, id)==True:
+                    return True
+                else:
+                    return False
         else: 
             return False
 
@@ -61,27 +55,20 @@ try:
         cfg = configparser.ConfigParser()
         with open('settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
-        # wayConf = cfg.get('settings', 'way')
-        wayConf = cfg.get('links', 'webdir')+cfg.get('settings', 'storageFolder')+'/'
-        if id[0]=='y' or id[0]=='f' or id[0]=='s':
-            if id[0]=='y':
-                libName = cfg.get('libs', 'youtubelib')
-                wayConf=wayConf+'youtube/'
-                categ='youtube'
-            if id[0]=='f':
-                libName = cfg.get('libs', 'filmslib')
-                wayConf=wayConf+'films/'
-                categ='films'
-            if id[0]=='s':
-                libName = cfg.get('libs', 'serialslib')
-                wayConf=wayConf+'serials/'
-                categ='serials'
-            with open(libName, 'r', encoding='utf-8') as fp:
-                cfg.read_file(fp)
-            fullway = wayConf + cfg.get(categ, id)
-            return fullway
-        else: 
-            return False
+        wayConf = cfg.get('settings', 'way')
+        if isVideoIDExist(id)==True:
+            if cfg.has_option('prefixes', id[0]):
+                categ = cfg.get('prefixes', id[0])
+                wayParam = categ + 'folder'
+                wayConf = wayConf + cfg.get('settings', wayParam)+'/'
+                libName = cfg.get('libs', categ)
+                with open(libName, 'r', encoding='utf-8') as fp:
+                    cfg.read_file(fp)
+                fullway = wayConf + cfg.get(categ, id)
+                return fullway
+            else: 
+                return False # check usage!
+        else: return None
     
     def searchById(id):
         if isVideoIDExist(id)==True:
@@ -89,22 +76,13 @@ try:
             with open('settings.ini', 'r', encoding='utf-8') as fp:
                 cfg.read_file(fp)
             wayConf = cfg.get('settings', 'way')
-            if id[0]=='y' or id[0]=='f' or id[0]=='s':
-                if id[0]=='y':
-                    libName = cfg.get('libs', 'youtubelib')
-                    wayConf=wayConf+'youtube/'
-                    categ='youtube'
-                if id[0]=='f':
-                    libName = cfg.get('libs', 'filmslib')
-                    wayConf=wayConf+'films/'
-                    categ='films'
-                if id[0]=='s':
-                    libName = cfg.get('libs', 'serialslib')
-                    wayConf=wayConf+'serials/'
-                    categ='serials'
+            if cfg.has_option('prefixes', id[0]):
+                categ = cfg.get('prefixes', id[0])
+                wayParam = categ + 'folder'
+                wayConf = wayConf + cfg.get('settings', wayParam)
+                libName = cfg.get('libs', categ)
                 with open(libName, 'r', encoding='utf-8') as fp:
                     cfg.read_file(fp)
-                fullway = wayConf + cfg.get(categ, id)
                 return [
                     [categ, id, cfg.get(categ, id).split('/')[0], cfg.get(categ, id).split('/')[1]]
                 ]
@@ -115,12 +93,7 @@ try:
         if type == 'keywords':
             cats = 'keywords'
         if type == 'filename':
-            if name == 'storageLib_Films.ini':
-                cats = 'films'
-            if name == 'storageLib_Yt.ini':
-                cats = 'youtube'
-            if name == 'storageLib_Serials.ini':
-                cats = 'serials'
+            cats = name.replace('storageLib_', '').replace('.ini', '').lower()
         cfg = configparser.ConfigParser()
         with open(name, 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
@@ -131,10 +104,10 @@ try:
         with open('settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         filename = filename.lower().replace(' ', '-')
-        libNames = [cfg.get('libs', 'youtubelib'), cfg.get('libs', 'serialslib'), cfg.get('libs', 'filmslib')]
+        libNames = cfg.items('libs')
         founded = []
         for n in libNames:
-            g = confReaderOptions(n, type)
+            g = confReaderOptions(n[1], type)
             for f in g:
                 if filename.lower() in f[1].lower():
                     foundName = f[1]
@@ -148,12 +121,7 @@ try:
         if founded!=[]:
             for naming in founded:
                 id = naming[0]
-                if id[0]=='y':
-                    categ='youtube'
-                if id[0]=='f':
-                    categ='films'
-                if id[0]=='s':
-                    categ='serials'
+                categ = cfg.get('prefixes', id[0])
                 channel = naming[1].split('/')[0]
                 filename = naming[1].split('/')[1]
                 fidex.append([categ, id, channel, filename])
@@ -171,33 +139,42 @@ try:
     try:
         filed = requests.get(cfg.get('links', 'githubdir'))
         gitHubversion_client = str(filed.text.split('\n')[0].replace('current_version_client = ', '').replace("'", ''))
+        ver = 'update; current-ver '+current_version_client
+        logging.info(ver)
     except requests.exceptions.ConnectionError:
         gitHubversion_client = 'Could not connect'
     back_client = '#0a0f14'
 
-    ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtubelib')
-    serialslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'serialslib')
-    filmslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'filmslib')
+    ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtube')
+    serialslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'serials')
+    filmslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'films')
     liblist = [ytlib, serialslib, filmslib]
     todownload = []
-    for lib in liblist:
-        filenam = lib.split('/')[-1]
-        try:
-            with open(filenam, 'r', encoding='utf-8') as fpe:
-                texted = fpe.read()
-            if requests.get(lib).text.split() == texted.split():
-                pass
-            else:
+    try:
+        for lib in liblist:
+            filenam = lib.split('/')[-1]
+            try:
+                with open(filenam, 'r', encoding='utf-8') as fpe:
+                    texted = fpe.read()
+                if requests.get(lib).text.split() == texted.split():
+                    pass
+                else:
+                    todownload.append(lib)
+            except:
                 todownload.append(lib)
-        except:
-            todownload.append(lib)
-    if todownload != []:
-        for naming in todownload:
-            libname = naming.split('/')[-1]
-            f = open(libname, 'w', encoding='utf-8')
-            texting = requests.get(naming).text
-            f.write(texting)
-            f.close()
+        if todownload != []:
+            for naming in todownload:
+                libname = naming.split('/')[-1]
+                f = open(libname, 'w', encoding='utf-8')
+                texting = requests.get(naming).text
+                f.write(texting)
+                f.close()
+    except requests.exceptions.ConnectionError:
+        alerttext = 'Could not connect to server\n'+cfg.get('links', 'webdir')
+        alerttext_log = 'Could not connect to server '+cfg.get('links', 'webdir')
+        pymsg.alert(title='Connection error', text=alerttext)
+        logging.error(alerttext_log)
+        exit(alerttext_log)
     updateone = [
         [sg.Text('Current client version: ', background_color='#0a0f14')],
         [sg.Text('GitHub client version: ', background_color='#0a0f14')],
@@ -219,25 +196,31 @@ try:
     while True:
         event, values = updateWindow.read(timeout=10)
         if event!='__TIMEOUT__':
+            loge = 'update; event:'+ event + '; values:' + str(values)
+            logging.debug(loge)
             print(event, values)
         if event == sg.WIN_CLOSED:           # always,  always give a way out!
             break
         if event == '-update-go-ahead':
+            logging.info('update; go to main app')
+            updateWindow.hide()
             break
         if event == '-update-exit':
+            logging.info('update; user close')
             exit()
 
+    #keywords maker
+
     #main layout
-    logging.info('Icons and theme created.')
     mainLayout = [
         [sg.Text('Main page')],
         [sg.Text('+ Stats')],
         [sg.Text('- Settings')],
-        [sg.Text('- Torrents')],
+        # [sg.Text('- Torrents')],
         [sg.Text('+ Search')],
-        [sg.Text('- Music')],
+        # [sg.Text('- Music')],
         [sg.Text('+ Video')],
-        [sg.Text('- Life')],
+        # [sg.Text('- Life')],
         [sg.Text('- Subscriptions')],
     ]
 
@@ -252,15 +235,15 @@ try:
     ]
 
     settingsLineOne = [
-        [sg.Button('Restart app', expand_x=True, key='-settings-restart-app')],
-        [sg.Button('Reboot system', expand_x=True, key='-settings-reboot-system')],
-        [sg.Text('Cooling mode'), sg.Button('Silent', expand_x=True, key='-settings-cooling-silent'), sg.Button('Standart', expand_x=True, key='-settings-cooling-standart'), sg.Button('Turbo', expand_x=True, key='-settings-cooling-turbo')],
+        # [sg.Button('Restart app', expand_x=True, key='-settings-restart-app')],
+        # [sg.Button('Reboot system', expand_x=True, key='-settings-reboot-system')],
+        # [sg.Text('Cooling mode'), sg.Button('Silent', expand_x=True, key='-settings-cooling-silent'), sg.Button('Standart', expand_x=True, key='-settings-cooling-standart'), sg.Button('Turbo', expand_x=True, key='-settings-cooling-turbo')],
     ]
 
     settingsLineTwo = [
         [sg.Button('Exit app', expand_x=True, key='-exit-app-settings')],
-        [sg.Button('Shutdown system', expand_x=True, key='-settings-shutdown-system')],
-        [sg.Button('ON/OFF Wi-Fi', expand_x=True, key='-settings-wifi'), sg.Button('ON/OFF Bluetooth', expand_x=True, key='-settings-bt')],
+        # [sg.Button('Shutdown system', expand_x=True, key='-settings-shutdown-system')],
+        # [sg.Button('ON/OFF Wi-Fi', expand_x=True, key='-settings-wifi'), sg.Button('ON/OFF Bluetooth', expand_x=True, key='-settings-bt')],
     ]
 
     settingsLayout = [
@@ -326,8 +309,11 @@ try:
         [sg.Text('Life control')]
     ]
 
+    subsHeadings = ['Service', 'Date created', 'Expire at', 'Warnings']
+    subsValues = [['Spotify', 'xx.09.2019', 'xx.09.2039', '']]
     subsLayout = [
-        [sg.Text('Subscriptions')]
+        [sg.Text('Subscriptions'), sg.Button('Add new', key='-subs-add'), sg.Button('Update from server', key='-subs-update'), sg.Button('Delete', key='-subs-delete')],
+        [sg.Table(subsValues, headings=subsHeadings, expand_x=True, expand_y=True, display_row_numbers=True)]
     ]
 
     layout = [
@@ -340,7 +326,7 @@ try:
             # sg.Tab('Music', musicLayout, image_source=iconMusic),
             sg.Tab('Video', videoLayout, image_source=iconVideo),
             # sg.Tab('Life', lifeLayout, image_source=iconLife),
-            # sg.Tab('Subscriptions', subsLayout, image_source=iconSubs),
+            sg.Tab('Subscriptions', subsLayout, image_source=iconSubs),
             ]], expand_y=True, expand_x=True, background_color='#0a0f14', key='-tab-name'
         )],
         [sg.Image(data=iconExit, key='-exit-app-main', enable_events=True, background_color='#0a0f14', tooltip='Exit from app'), sg.Text('', expand_x=True, background_color='#0a0f14'), sg.Image(data=iconLock, key='-lockscreen', enable_events=True, background_color='#0a0f14', tooltip='Lock screen'), sg.Text('23:29 31.12.1234', key='-main-time', background_color='#0a0f14')] # debug option
@@ -356,7 +342,7 @@ try:
     windowLock = sg.Window('Lockscreen', lockLayout, no_titlebar=True, size=sizeScreen, keep_on_top=True, font='Arial', background_color='Black', element_justification='c').Finalize()
     windowLock.hide()
     lockEvent = None
-    logging.info('Layouts created.')
+    logging.info('main-app; Layouts created.')
 
     inst = vlc.Instance()
     list_player = inst.media_list_player_new()
@@ -367,10 +353,12 @@ try:
         player.set_xwindow(window['-VID_OUT-'].Widget.winfo_id())
     else:
         player.set_hwnd(window['-VID_OUT-'].Widget.winfo_id())
-    logging.info('Player created')
+    logging.info('vlc-player; Player created')
     while True:
         event, values = window.read(timeout=10)
         if event!='__TIMEOUT__':
+            loge = 'main-window; event:'+ event + '; values:' + str(values)
+            logging.debug(loge)
             print(event, values)
         if event == sg.WIN_CLOSED:           # always,  always give a way out!
             break
@@ -471,19 +459,73 @@ try:
             if values['-toinput-vids']==True: oldinf = values['-video-id-link']; window['-video-id-link'].update(oldinf[:-1])
             else: oldinf = values['-torrent-row-number']; window['-torrent-row-number'].update(oldinf[:-1])
         if event == '-search':
-            """
-            if values['-search-byid']==True:
-                window['-search-results'].update(values=searchById(values['-search-input']))
-            # if values['-search-bykeywords-channel']==True: #obsolete
-            #     window['-search-results'].update(values=searchByChannel(values['-search-input'])) #obsolete
-            """
             if values['-search-byid']==True:
                 window['-search-results'].update(values=searchById(values['-search-input']))
             if values['-search-keywords-and-id']==True:
                 window['-search-results'].update(values=search(values['-search-input'], type='keywords'))
             if values['-search-filename-and-id']==True:
                 window['-search-results'].update(values=search(values['-search-input'], type='filename'))
+        if event == '-subs-add':
+            l1=[
+                [sg.Text('Name', background_color='#0a0f14')],
+                [sg.Text('Created', background_color='#0a0f14')],
+                [sg.Text('Expire', background_color='#0a0f14')],
+            ]
+            l2=[
+                [sg.Input(key='-sub-name', size=20)],
+                [sg.Input(key='-sub-create', size=20), sg.Button('Today', key='-sub-today')],
+                [sg.Input(key='-sub-expire', size=20), sg.Button('Month(s)', key='-sub-month'), sg.Button('Year(s)', key='-sub-year')],
+            ]
+            addSubWindowLayout = [
+                [sg.Text('Add new subscribe', background_color='#0a0f14')],
+                [sg.Column(l1, background_color='#0a0f14'), sg.Column(l2, background_color='#0a0f14')],
+                [sg.Button('Add', key='-sub-add'), sg.Button('Cancel', key='-sub-close')]
+            ]
+            addSubWindow = sg.Window('Add subscribe', addSubWindowLayout, no_titlebar=True, keep_on_top=True, font='Arial', background_color='#0a0f14').Finalize()
+            while True:
+                event, values = addSubWindow.read(timeout=10)
+                if event!='__TIMEOUT__':
+                    loge = 'subs-add-window; event:'+ event + '; values:' + str(values)
+                    logging.debug(loge)
+                    print(event, values)
+                if event == sg.WIN_CLOSED:           # always,  always give a way out!
+                    break
+                if event == '-sub-add':
+                    addSubWindow.hide()
+                    # after work - upload new version to server
+                    break
+                if event == '-sub-close':
+                    addSubWindow.hide()
+                    break
+        if event == '-subs-update':
+            # download from server
+            pass
+        if event == '-subs-delete':
+            delSubWindowLayout = [
+                [sg.Text('Delete by row number', background_color='#0a0f14'), sg.Input(size=3, key='-subs-del-number')],
+                [sg.Button('Delete', key='-subd-del'), sg.Button('Cancel', key='-subd-close')]
+            ]
+            delSubWindow = sg.Window('Add subscribe', delSubWindowLayout, no_titlebar=True, keep_on_top=True, font='Arial', background_color='#0a0f14').Finalize()
+            while True:
+                event, values = delSubWindow.read(timeout=10)
+                if event!='__TIMEOUT__':
+                    loge = 'subs-del-window; event:'+ event + '; values:' + str(values)
+                    logging.debug(loge)
+                    print(event, values)
+                if event == sg.WIN_CLOSED:           # always,  always give a way out!
+                    break
+                if event == '-subd-del':
+                    delSubWindow.hide()
+                    # after work - upload new version to server
+                    break
+                if event == '-subd-close':
+                    delSubWindow.hide()
+                    break
     window.close()
+    logging.info('main-window; user close')
+except FileNotFoundError:
+    print('Settings file not found')
 except Exception as c:
     print(c)
     logging.fatal(traceback.format_exc())
+
