@@ -1,4 +1,4 @@
-current_version_client = '0.4'
+current_version_client = '0.4f1'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -125,7 +125,10 @@ try:
         if founded!=[]:
             for naming in founded:
                 id = naming[0]
-                categ = cfg.get('prefixes', id[0])
+                try:
+                    categ = cfg.get('prefixes', id[0])
+                except configparser.NoOptionError:
+                    return[['Not found']]
                 channel = naming[1].split('/')[0]
                 filename = naming[1].split('/')[1]
                 fidex.append([categ, id, channel, filename])
@@ -194,7 +197,7 @@ try:
         [sg.Text('0.0', key='-app-version-server-github', background_color='#0a0f14')],
     ]
     update = [
-        [sg.Text('Application update', background_color='#0a0f14')],
+        [sg.Text('Application version check', background_color='#0a0f14')],
         [sg.Column(updateone, background_color='#0a0f14'), sg.Column(updatetwo, background_color='#0a0f14')],
         [sg.Button('Okay', key='-update-go-ahead', expand_x=True), sg.Button('Exit', key='-update-exit', expand_x=True)]
     ]
@@ -272,7 +275,7 @@ try:
         # [sg.Radio(text='Film', group_id='filetype', key='-search-film'), sg.Radio(text='Document', group_id='filetype', key='-search-doc'), sg.Radio(text='Program', group_id='filetype', key='-search-program'), sg.Radio(text='Game', group_id='filetype', key='-search-game'), sg.Radio(text='All files', group_id='filetype', key='-search-alltypes', default=True)],
         # [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords in filename', group_id='filecategory', key='-search-bykeywords-filename'), sg.Radio(text='Keywords in Channel/Category/Name', group_id='filecategory', key='-search-bykeywords-channel')],
         [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-keywords-and-id', default=True), sg.Radio(text='Filename and ID', group_id='filecategory', key='-search-filename-and-id', default=True)],
-        [sg.Table(values=searchTable, headings=searchHead, expand_y=True, expand_x=True, auto_size_columns=True, hide_vertical_scroll=False, display_row_numbers=False, key='-search-results')],
+        [sg.Table(values=searchTable, headings=searchHead, expand_y=True, expand_x=True, auto_size_columns=True, hide_vertical_scroll=False, display_row_numbers=False, key='-search-results', vertical_scroll_only=True, col_widths=[0, 1, 2], def_col_width=50)],
 
     ]
 
