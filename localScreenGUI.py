@@ -9,7 +9,10 @@ try:
     import psutil
     import traceback
     import os
-    os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+    try:
+        os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+    except:
+        pass
     import vlc
     import datetime
     import pymsgbox as pymsg
@@ -33,6 +36,7 @@ try:
     # original # iconExit = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAsElEQVRYw+3XvRHCMAyGYe0BY/CzGp2mSTZLKriwwUvDcUdhGywpgTt9vfMUUmRZJJNxDntGZnozM7Crf/6GNdcKwYhHhjIwuQBTGXimu4Kt8wmYARQNBFCAGmECuLzaUGOAA0uLMNaQY4uwNkmTMAMinLiXCQdAhHOZ+LjIX0SjgTfiLwH9rSJv3qbBP5rDqAgfdpuO6/ALZ4UrM9eWVYDw5Td8fY9+gIQ/oTKZrjwAm/oCnITJuaYAAAAASUVORK5CYII='
     iconExit = b'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAQAAAAm93DmAAAABGdBTUEAALGPC/xhBQAAAAJiS0dEAP+Hj8y/AAAAB3RJTUUH5gIJDzYwr5ioMQAAAehJREFUSMfllr1OG0EUhb/1zyIBCRFYKIIyfoJUkRHPkC6p4Q2oEFVChRAFDRJKE9dJirxDFlymj0QbKSIg8eMU9uIcCi+Z9YztGVubirPNanb3m3vvuTsz8OgUPdyoIFA0gCszT8VMEiBxR5ueQVVyD+d4ywZ1qsHhRqSc8ZHP/HEmUlmbutE0utGGynKAC0qmwknSNy08AE3KFV4AcEhCNTDllHW2gLrhGGBEDEDC14ns3QJiY2TelH7UVSybTXVs+0WWS66AJV8AAnhOPTRgD1AAq7zjmLWw5s+nPLyhl9lhk5hZtjnRyNfcCP9yySXXdKw3utm0DfZpWAUbl5pKWlRNNc1ocBytqqlUknSihtA/pNAbSdJv1dzGzl3OuEEmfeSEwCHXsj6ok49yFNCY8oRDno4skFjJ3FjjoG/PWHOEaroO/ncTvdSICL2NPalMyh2+eFJ+lf1oLXb47uEWZ8p/bJvCG3tRP3ShK722gM90pJ4k6XQQ5+vDEkssATNWeWPgjpgW27TAtzi4C6ytc/YoU+c9pz6YDRyiCMFPdpnnLATnBWbIXwGkIcB+ACljuttRmvvSAoouAOsw0TYK0HXmKm6jN4tDmya34bXK6ZYmbTflHp9g6sNSb9CIAo9zhR84H6HuAbCGTEdCaLm7AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIyLTAyLTA5VDE1OjU0OjQ0KzAwOjAwA5rT6QAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMi0wMi0wOVQxNTo1NDo0NCswMDowMHLHa1UAAAAASUVORK5CYII='
     iconSubs = b'iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAwklEQVRYw+2WsQ3CMBBFs0dmQiBBQypEi2ABNoAFyAAuEBvQMANMAEVSOS1KEfQYgEQosr8I0j33fpLv/p2TxBgs9MQE8QXG//R/72KbwJps2AlIcZShRabEkbZf74mFb1HgiIn7FBRRBUV3wEaBpytwXwVrtQAuLLUCeHEiUwoAanJmSgFAxZ6JUgDwYKsVANzYaAVXpeCufCLPjrGqyE8OTFVt2nBkrgvamYVyVKzUwy54XMsXjnxlqpe+/Nti/Iw3Jof1QhWrfUAAAAAASUVORK5CYII='
+    iconNoNet = b'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAQAAAAm93DmAAAABGdBTUEAALGPC/xhBQAAAAJiS0dEAP+Hj8y/AAAAB3RJTUUH5gIaCjI0iP6TtgAAAvhJREFUSMftlk1IVFEYht+ZqUZNUrEfQ2NGo9LJNi0KokAo2rWoNlGmkkJQ65IkCiKztpHQoiCqRT8jGlnLaBFBmrULCvInSqIfZqykpLpPizn3zr3jtZnJoE3fWczl3HOeOee87/fdI/3lCKR+yOz44wi6nparyI2eRSCCbOEeR5iPmD0UsYmnQIL2v4JE7GAYgCSHU8jZAkPsZQSAhI38fZspAimgpKB264SqJU2oS+c0KUlaqq0qV7GCkixN6oPea1gjmnJNn2GNIsQes/GEI08FF/iBHRZJxhigh+NspJDAjOs1LwI0M26Qtjyr6MEiM74xxl32sYSgL9IAF9LCSzPFkYcVvkiALzygkcXTkGbDDVxn0jU8Lc9KrjHKGxI+4K/EaUit05wqklSmZh3QioyFp+WpVL0KtUCLFdUq1avCM+6FzuuyPhocIkI3nz0n9IxXGfLYLUwNm+lggCnP5s9ShZAQVVxxKTnFY9qopsnxpSt7HOw8qmnjiQv6nUtUpoARbjrd43QSIYQIOlbPyB4HGiLCKeMKgJtEMK9j9GEBg+wkTNpEu3ieJXvC7GQQsOgjZv7UIOP0s94zeBHbeGh0TaY3TjHlnnHruUPcwTnIKDWuQeW00s+Y62zT8pTSQqsHWkPUz4l2m8MGbpGY5ri0PLVc5DabmJu1XCBKaGN0hsxIuqweZ4T9lGQpdIjtvHUhfjLMfXq46vgyjexlnO3ZgfVGcbB4xFG2UokQjU4JbneQHazODhS19GLxjk7WuM7Ir7iFcqjtCFFHN60UZHguSKNf9uQCFIXM8di3jDLCiD3+2ZOOgB/SExVap7VaJum1hjSkBp1UVFJSXerWZB5XA1MjbzDhaD7BDTbTnClP7sACzkzz4mmKfOTJEShi9LpMbtFLDBHyyFOcD9A2kY2rdRS3i9snDjI3x21jm6gPC4s+6jy+TCETHKIoj5uGU9w8BcqssolBjrEgz6uL+epEvNPMh2ANpd7+nEyEz+C8If/j38UvSYdICARJEx0AAAAldEVYdGRhdGU6Y3JlYXRlADIwMjItMDItMjZUMTA6NTA6NDYrMDA6MDDaFyZUAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIyLTAyLTI2VDEwOjUwOjQ2KzAwOjAwq0qe6AAAAABJRU5ErkJggg=='
     logging.info('main-app; Icons and theme created.')
     # filemanager
     def isVideoIDExist(id):
@@ -141,8 +145,10 @@ try:
         gitHubversion_client = str(filed.text.split('\n')[0].replace('current_version_client = ', '').replace("'", ''))
         ver = 'update; current-ver '+current_version_client
         logging.info(ver)
+        noNet = False
     except requests.exceptions.ConnectionError:
         gitHubversion_client = 'Could not connect'
+        noNet = True
     back_client = '#0a0f14'
 
     ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtube')
@@ -215,13 +221,13 @@ try:
     mainLayout = [
         [sg.Text('Main page')],
         [sg.Text('+ Stats')],
-        [sg.Text('- Settings')],
+        [sg.Text('WIP Settings')],
         # [sg.Text('- Torrents')],
         [sg.Text('+ Search')],
         # [sg.Text('- Music')],
         [sg.Text('+ Video')],
         # [sg.Text('- Life')],
-        [sg.Text('- Subscriptions')],
+        [sg.Text('WIP Subscriptions')],
     ]
 
     systemStatsLayout = [
@@ -231,11 +237,12 @@ try:
         [sg.Image(data=iconRam), sg.Text('RAM free  '), sg.Text('0GB', key='-stats_mem_free')],
         [sg.Image(data=iconRam), sg.Text('RAM full    '), sg.Text('0GB', key='-stats_mem_full')],
         [sg.Image(data=iconRam), sg.Text('RAM usage'), sg.Text('0%', key='-stats_mem_usage')],
-        [sg.Button('Reload stats', key='-stats-reload')]
+        [sg.Button('Reload stats', key='-stats-reload'), sg.Radio('This PC', default=True, group_id='sysstats'), sg.Radio('Server', group_id='sysstats', disabled=True), ],
+        
     ]
 
     settingsLineOne = [
-        # [sg.Button('Restart app', expand_x=True, key='-settings-restart-app')],
+        [sg.Button('Request libs from server', expand_x=True, key='-settings-request-libs')],
         # [sg.Button('Reboot system', expand_x=True, key='-settings-reboot-system')],
         # [sg.Text('Cooling mode'), sg.Button('Silent', expand_x=True, key='-settings-cooling-silent'), sg.Button('Standart', expand_x=True, key='-settings-cooling-standart'), sg.Button('Turbo', expand_x=True, key='-settings-cooling-turbo')],
     ]
@@ -261,7 +268,7 @@ try:
     searchLayout = [
         # use screen keyboard
         [sg.Text('Video search')],
-        [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search'), sg.Button('Reload libs', key='-download-libs'),],
+        [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search')],
         # [sg.Radio(text='Film', group_id='filetype', key='-search-film'), sg.Radio(text='Document', group_id='filetype', key='-search-doc'), sg.Radio(text='Program', group_id='filetype', key='-search-program'), sg.Radio(text='Game', group_id='filetype', key='-search-game'), sg.Radio(text='All files', group_id='filetype', key='-search-alltypes', default=True)],
         # [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords in filename', group_id='filecategory', key='-search-bykeywords-filename'), sg.Radio(text='Keywords in Channel/Category/Name', group_id='filecategory', key='-search-bykeywords-channel')],
         [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-keywords-and-id', default=True), sg.Radio(text='Filename and ID', group_id='filecategory', key='-search-filename-and-id', default=True)],
@@ -293,7 +300,7 @@ try:
         [sg.Button('7', key='-video-7', size=(3, 1)), sg.Button('8', key='-video-8', size=(3, 1)), sg.Button('9', key='-video-9', size=(3, 1))],
         [sg.Button('<', key='-video-delchar', size=(3, 1)), sg.Button('0', key='-video-0', size=(3, 1)), sg.Button('C', key='-video-clearid', size=(3, 1))],
         [sg.Radio(text='Videos tab', group_id='toinput', key='-toinput-vids', default=True)],
-        [sg.Radio(text='Torrent tab', group_id='toinput', key='-toinput-torrent')]
+        # [sg.Radio(text='Torrent tab', group_id='toinput', key='-toinput-torrent')]
     ]
 
     videoLayout = [
@@ -312,7 +319,7 @@ try:
     subsHeadings = ['Service', 'Date created', 'Expire at', 'Warnings']
     subsValues = [['Spotify', 'xx.09.2019', 'xx.09.2039', '']]
     subsLayout = [
-        [sg.Text('Subscriptions'), sg.Button('Add new', key='-subs-add'), sg.Button('Update from server', key='-subs-update'), sg.Button('Delete', key='-subs-delete')],
+        [sg.Text('Subscriptions (current only for local PC)'), sg.Text('', expand_x=True), sg.Button('Add new', key='-subs-add'), sg.Button('Delete', key='-subs-delete')],
         [sg.Table(subsValues, headings=subsHeadings, expand_x=True, expand_y=True, display_row_numbers=True)]
     ]
 
@@ -329,7 +336,13 @@ try:
             sg.Tab('Subscriptions', subsLayout, image_source=iconSubs),
             ]], expand_y=True, expand_x=True, background_color='#0a0f14', key='-tab-name'
         )],
-        [sg.Image(data=iconExit, key='-exit-app-main', enable_events=True, background_color='#0a0f14', tooltip='Exit from app'), sg.Text('', expand_x=True, background_color='#0a0f14'), sg.Image(data=iconLock, key='-lockscreen', enable_events=True, background_color='#0a0f14', tooltip='Lock screen'), sg.Text('23:29 31.12.1234', key='-main-time', background_color='#0a0f14')] # debug option
+        [sg.Image(data=iconExit, key='-exit-app-main', enable_events=True, background_color='#0a0f14', tooltip='Exit from app'),
+        sg.Image(data=iconLock, key='-lockscreen', enable_events=True, background_color='#0a0f14', tooltip='Lock screen', p=[10, 0]),
+        sg.Text('', expand_x=True, background_color='#0a0f14'), 
+        sg.Text('|', background_color='#0a0f14', key='-status-separator'),
+        sg.Image(data=iconNoNet, background_color='#0a0f14', key='-status-noneticon'),
+        sg.Text('|', background_color='#0a0f14'),
+        sg.Text('23:29 31.12.1234', key='-main-time', background_color='#0a0f14', enable_events=True)] # debug option
     ]
 
     lockLayout = [
@@ -356,6 +369,9 @@ try:
     logging.info('vlc-player; Player created')
     while True:
         event, values = window.read(timeout=10)
+        if noNet == False:
+            window['-status-separator'].update(visible=False)
+            window['-status-noneticon'].update(visible=False)
         if event!='__TIMEOUT__':
             loge = 'main-window; event:'+ event + '; values:' + str(values)
             logging.debug(loge)
