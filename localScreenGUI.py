@@ -1,4 +1,4 @@
-current_version_client = '0.4f1'
+current_version_client = '0.4f2'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -59,7 +59,8 @@ try:
         cfg = configparser.ConfigParser()
         with open('settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
-        wayConf = cfg.get('settings', 'way')
+        # wayConf = cfg.get('settings', 'way')
+        wayConf = cfg.get('links', 'webdir')+'storage/'
         if isVideoIDExist(id)==True:
             if cfg.has_option('prefixes', id[0]):
                 categ = cfg.get('prefixes', id[0])
