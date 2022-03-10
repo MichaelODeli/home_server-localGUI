@@ -1,4 +1,4 @@
-current_version_client = '0.4f2'
+current_version_client = '0.6'
 import logging
 logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
 logging.info(' ')
@@ -39,6 +39,7 @@ try:
     iconNoNet = b'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAQAAAAm93DmAAAABGdBTUEAALGPC/xhBQAAAAJiS0dEAP+Hj8y/AAAAB3RJTUUH5gIaCjI0iP6TtgAAAvhJREFUSMftlk1IVFEYht+ZqUZNUrEfQ2NGo9LJNi0KokAo2rWoNlGmkkJQ65IkCiKztpHQoiCqRT8jGlnLaBFBmrULCvInSqIfZqykpLpPizn3zr3jtZnJoE3fWczl3HOeOee87/fdI/3lCKR+yOz44wi6nparyI2eRSCCbOEeR5iPmD0UsYmnQIL2v4JE7GAYgCSHU8jZAkPsZQSAhI38fZspAimgpKB264SqJU2oS+c0KUlaqq0qV7GCkixN6oPea1gjmnJNn2GNIsQes/GEI08FF/iBHRZJxhigh+NspJDAjOs1LwI0M26Qtjyr6MEiM74xxl32sYSgL9IAF9LCSzPFkYcVvkiALzygkcXTkGbDDVxn0jU8Lc9KrjHKGxI+4K/EaUit05wqklSmZh3QioyFp+WpVL0KtUCLFdUq1avCM+6FzuuyPhocIkI3nz0n9IxXGfLYLUwNm+lggCnP5s9ShZAQVVxxKTnFY9qopsnxpSt7HOw8qmnjiQv6nUtUpoARbjrd43QSIYQIOlbPyB4HGiLCKeMKgJtEMK9j9GEBg+wkTNpEu3ieJXvC7GQQsOgjZv7UIOP0s94zeBHbeGh0TaY3TjHlnnHruUPcwTnIKDWuQeW00s+Y62zT8pTSQqsHWkPUz4l2m8MGbpGY5ri0PLVc5DabmJu1XCBKaGN0hsxIuqweZ4T9lGQpdIjtvHUhfjLMfXq46vgyjexlnO3ZgfVGcbB4xFG2UokQjU4JbneQHazODhS19GLxjk7WuM7Ir7iFcqjtCFFHN60UZHguSKNf9uQCFIXM8di3jDLCiD3+2ZOOgB/SExVap7VaJum1hjSkBp1UVFJSXerWZB5XA1MjbzDhaD7BDTbTnClP7sACzkzz4mmKfOTJEShi9LpMbtFLDBHyyFOcD9A2kY2rdRS3i9snDjI3x21jm6gPC4s+6jy+TCETHKIoj5uGU9w8BcqssolBjrEgz6uL+epEvNPMh2ANpd7+nEyEz+C8If/j38UvSYdICARJEx0AAAAldEVYdGRhdGU6Y3JlYXRlADIwMjItMDItMjZUMTA6NTA6NDYrMDA6MDDaFyZUAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIyLTAyLTI2VDEwOjUwOjQ2KzAwOjAwq0qe6AAAAABJRU5ErkJggg=='
     logging.info('main-app; Icons and theme created.')
     # filemanager
+
     def isVideoIDExist(id):
         cfg = configparser.ConfigParser()
         with open('settings.ini', 'r', encoding='utf-8') as fp:
@@ -54,50 +55,51 @@ try:
                     return False
         else: 
             return False
-
     def getLinkId(id):
         cfg = configparser.ConfigParser()
         with open('settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         # wayConf = cfg.get('settings', 'way')
         wayConf = cfg.get('links', 'webdir')+'storage/'
-        if isVideoIDExist(id)==True:
-            if cfg.has_option('prefixes', id[0]):
-                categ = cfg.get('prefixes', id[0])
-                wayParam = categ + 'folder'
-                wayConf = wayConf + cfg.get('settings', wayParam)+'/'
-                libName = cfg.get('libs', categ)
-                with open(libName, 'r', encoding='utf-8') as fp:
-                    cfg.read_file(fp)
+        # if isVideoIDExist(id)==True:
+        if cfg.has_option('prefixes', id[0]):
+            categ = cfg.get('prefixes', id[0])
+            wayParam = categ + 'folder'
+            wayConf = wayConf + cfg.get('settings', wayParam)+'/'
+            libName = cfg.get('libs', categ)
+            with open(libName, 'r', encoding='utf-8') as fp:
+                cfg.read_file(fp)
+            if cfg.has_option(categ, id)==True:
                 fullway = wayConf + cfg.get(categ, id)
                 return fullway
-            else: 
-                return False # check usage!
-        else: return None
+            else:
+                return False
+        else: 
+            return False # check usage!
     
     def searchById(id):
-        if isVideoIDExist(id)==True:
-            cfg = configparser.ConfigParser()
-            with open('settings.ini', 'r', encoding='utf-8') as fp:
+        cfg = configparser.ConfigParser()
+        with open('settings.ini', 'r', encoding='utf-8') as fp:
+            cfg.read_file(fp)
+        wayConf = cfg.get('settings', 'way')
+        if cfg.has_option('prefixes', id[0]):
+            categ = cfg.get('prefixes', id[0])
+            wayParam = categ + 'folder'
+            wayConf = wayConf + cfg.get('settings', wayParam)
+            libName = cfg.get('libs', categ)
+            with open(libName, 'r', encoding='utf-8') as fp:
                 cfg.read_file(fp)
-            wayConf = cfg.get('settings', 'way')
-            if cfg.has_option('prefixes', id[0]):
-                categ = cfg.get('prefixes', id[0])
-                wayParam = categ + 'folder'
-                wayConf = wayConf + cfg.get('settings', wayParam)
-                libName = cfg.get('libs', categ)
-                with open(libName, 'r', encoding='utf-8') as fp:
-                    cfg.read_file(fp)
+            if cfg.has_option(categ, id)==True:
                 return [
                     [categ, id, cfg.get(categ, id).split('/')[0], cfg.get(categ, id).split('/')[1]]
                 ]
-        else:
-            return [['Not found']]
+            else:
+                return [['Not found']]
 
     def confReaderOptions(name, type):
         if type == 'keywords':
             cats = 'keywords'
-        if type == 'filename':
+        if type == 'filename' or type == 'channel' or type == 'all':
             cats = name.replace('storageLib_', '').replace('.ini', '').lower()
         cfg = configparser.ConfigParser()
         with open(name, 'r', encoding='utf-8') as fp:
@@ -114,22 +116,38 @@ try:
         for n in libNames:
             g = confReaderOptions(n[1], type)
             for f in g:
-                if filename.lower() in f[1].lower():
-                    foundName = f[1]
-                    id = f[0]
-                    founded.append([id, foundName])
-                if filename.lower() in f[0].lower():
-                    foundName = f[1]
-                    id = f[0]
-                    founded.append([id, foundName])
+                if str(f[0])!='-1':
+                    channel_ = f[1].split('/')[0]
+                    filename_ = f[1].split('/')[1]
+                    if type == 'filename' or type == 'channel' or type == 'keywords':
+                        if type == 'filename':
+                            tofind = filename_
+                        elif type == 'channel':
+                            tofind = channel_
+                        elif type == 'keywords':
+                            tofind = f[1]
+                        else: return[['Incorrect type']]
+                        if filename.lower() in tofind.lower():
+                            foundName = f[1]
+                            id = f[0]
+                            founded.append([id, foundName])
+                    elif type == 'all':
+                        if filename.lower() in f[0].lower():
+                            foundName = f[1]
+                            id = f[0]
+                            founded.append([id, foundName])
+                        if filename.lower() in f[1].lower():
+                            foundName = f[1]
+                            id = f[0]
+                            founded.append([id, foundName])
         fidex = []
         if founded!=[]:
             for naming in founded:
                 id = naming[0]
-                try:
-                    categ = cfg.get('prefixes', id[0])
-                except configparser.NoOptionError:
-                    return[['Not found']]
+                # try:
+                categ = cfg.get('prefixes', id[0])
+                # except configparser.NoOptionError:
+                # return[['Not found']]
                 channel = naming[1].split('/')[0]
                 filename = naming[1].split('/')[1]
                 fidex.append([categ, id, channel, filename])
@@ -154,11 +172,10 @@ try:
         gitHubversion_client = 'Could not connect'
         noNet = True
     back_client = '#0a0f14'
-
-    ytlib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'youtube')
-    serialslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'serials')
-    filmslib = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', 'films')
-    liblist = [ytlib, serialslib, filmslib]
+    liblist = []
+    for libary in cfg.options('libs'):
+        this = cfg.get('links', 'webdir')+cfg.get('settings', 'storagefolder')+'/'+cfg.get('libs', libary)
+        liblist.append(this)
     todownload = []
     try:
         for lib in liblist:
@@ -246,15 +263,22 @@ try:
     ]
 
     settingsLineOne = [
-        [sg.Button('Request libs from server', expand_x=True, key='-settings-request-libs')],
+        [sg.Button('Download libs from server', expand_x=True, key='-settings-request-libs'), sg.Button('Renamer', expand_x=True, key='-settings-renamer'), sg.Button('Symlink manager', expand_x=True, key='-settings-renamer')],
         # [sg.Button('Reboot system', expand_x=True, key='-settings-reboot-system')],
-        # [sg.Text('Cooling mode'), sg.Button('Silent', expand_x=True, key='-settings-cooling-silent'), sg.Button('Standart', expand_x=True, key='-settings-cooling-standart'), sg.Button('Turbo', expand_x=True, key='-settings-cooling-turbo')],
+        [sg.Text('Connection settings', p=(0, (10, 0)))],
+        [sg.Text('Remote server IP'), sg.Input(default_text='192.168.3.33', key='-server-ip', size=12, disabled=True)],
+        [sg.Checkbox('Version check on startup', key='-ver-check-enable', disabled=True, default=True)],
+        [sg.Checkbox('Internet check on startup', key='-internet-check-enable', disabled=True, default=True)],
+        [sg.Text('Notify settings', p=(0, (10, 0)))],
+        [sg.Checkbox('Notify daemon (need restart) (Win10+)', key='-notify-daemon-enable', disabled=True)],
+        [sg.Checkbox('Notify about new releases', key='-notify-content', disabled=True)],
+        [sg.Checkbox('Notify about new app version', key='-notify-app-update', disabled=True)],
     ]
 
     settingsLineTwo = [
-        [sg.Button('Exit app', expand_x=True, key='-exit-app-settings')],
-        # [sg.Button('Shutdown system', expand_x=True, key='-settings-shutdown-system')],
-        # [sg.Button('ON/OFF Wi-Fi', expand_x=True, key='-settings-wifi'), sg.Button('ON/OFF Bluetooth', expand_x=True, key='-settings-bt')],
+        [sg.Text('', expand_y=True)],
+        [sg.Button('Save', expand_x=True, key='-save-settings'), sg.Button('Reset', expand_x=True, key='-reset-settings')],
+        # [sg.Button('Exit app', expand_x=True, key='-exit-app-settings')],
     ]
 
     settingsLayout = [
@@ -267,7 +291,7 @@ try:
         # ['youtube', 'y3', 'Сосед_Комкиных', 'ТОКСИК-ПАНДА-_-RYTP.mp4']
     ]
 
-    searchHead = ['Category', 'ID', 'Channel/Category/Name', 'Video name']
+    searchHead = ['Type', 'ID', 'Channel/Category/Name', 'Video name']
 
     searchLayout = [
         # use screen keyboard
@@ -275,7 +299,7 @@ try:
         [sg.Input(expand_x=True, key='-search-input'), sg.Button('Search', expand_x=True, key='-search')],
         # [sg.Radio(text='Film', group_id='filetype', key='-search-film'), sg.Radio(text='Document', group_id='filetype', key='-search-doc'), sg.Radio(text='Program', group_id='filetype', key='-search-program'), sg.Radio(text='Game', group_id='filetype', key='-search-game'), sg.Radio(text='All files', group_id='filetype', key='-search-alltypes', default=True)],
         # [sg.Radio(text='ID', group_id='filecategory', key='-search-byid', default=True), sg.Radio(text='Keywords in filename', group_id='filecategory', key='-search-bykeywords-filename'), sg.Radio(text='Keywords in Channel/Category/Name', group_id='filecategory', key='-search-bykeywords-channel')],
-        [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords and ID', group_id='filecategory', key='-search-keywords-and-id', default=True), sg.Radio(text='Filename and ID', group_id='filecategory', key='-search-filename-and-id', default=True)],
+        [sg.Radio(text='ID', group_id='filecategory', key='-search-byid'), sg.Radio(text='Keywords', group_id='filecategory', key='-search-keywords', default=True), sg.Radio(text='Filename', group_id='filecategory', key='-search-filename'), sg.Radio(text='Category', group_id='filecategory', key='-search-channel'), sg.Radio(text='All', group_id='filecategory', key='-search-all', default=True)],
         [sg.Table(values=searchTable, headings=searchHead, expand_y=True, expand_x=True, auto_size_columns=True, hide_vertical_scroll=False, display_row_numbers=False, key='-search-results', vertical_scroll_only=True, col_widths=[0, 1, 2], def_col_width=50)],
 
     ]
@@ -288,7 +312,7 @@ try:
     torrentLayout = [
         [sg.Text('Torrent manager')],
         [sg.Table(values=torrTable, headings=torrHead, expand_x=True, expand_y=True, auto_size_columns=True, hide_vertical_scroll=False, display_row_numbers=True)],
-        [sg.Text('Torrent controls. '), sg.Input(tooltip='Number of row; Input via Video window', size=3, key='-torrent-row-number', justification='c'), sg.Button('Resume/Pause', key='-torrent-resume-pause'), sg.Button('Delete', key='-torrent-delete'), sg.Button('Get local link to file', key='-torrent-get-local-link'), sg.Button('Start/Stop torrent service', expand_x=True, key='-torrent-service-control'), sg.Button('Refresh list', key='-torrent-refresh', expand_x=True)],
+        [sg.Text('Torrent controls. '), sg.Input(tooltip='Number of row; Input via Video window', size=3, key='-torrent-row-number', justification='c'), sg.Button('Resume/Pause', key='-torrent-resume-pause'), sg.Button('Delete', key='-torrent-delete'), sg.Button('Refresh list', key='-torrent-refresh', expand_x=True)],
     ]
 
     videoPlayer = [
@@ -332,7 +356,7 @@ try:
             [[sg.Tab('Home', mainLayout, image_source=iconHome), 
             sg.Tab('Stats', systemStatsLayout, image_source=iconCPU), 
             sg.Tab('Settings', settingsLayout, image_source=iconSettings), 
-            # sg.Tab('Torrents', torrentLayout, image_source=iconTorrent), 
+            sg.Tab('Torrents', torrentLayout, image_source=iconTorrent), 
             sg.Tab('Search', searchLayout, image_source=iconSearch),
             # sg.Tab('Music', musicLayout, image_source=iconMusic),
             sg.Tab('Video', videoLayout, image_source=iconVideo),
@@ -437,7 +461,7 @@ try:
                     if isVideoIDExist(values['-video-id-link']):
                         media_list.add_media(getLinkId(values['-video-id-link']))
                     else:
-                        pymsg.alert(title='Warning!', text='File not found')
+                        window['-video-msg-area'].update(value='Not found')
         if event == '-video-clear':
             list_player = inst.media_list_player_new()
             media_list = inst.media_list_new([])
@@ -481,10 +505,14 @@ try:
         if event == '-search':
             if values['-search-byid']==True:
                 window['-search-results'].update(values=searchById(values['-search-input']))
-            if values['-search-keywords-and-id']==True:
+            if values['-search-keywords']==True:
                 window['-search-results'].update(values=search(values['-search-input'], type='keywords'))
-            if values['-search-filename-and-id']==True:
+            if values['-search-filename']==True:
                 window['-search-results'].update(values=search(values['-search-input'], type='filename'))
+            if values['-search-channel']==True:
+                window['-search-results'].update(values=search(values['-search-input'], type='channel'))
+            if values['-search-all']==True:
+                window['-search-results'].update(values=search(values['-search-input'], type='all'))
         if event == '-subs-add':
             l1=[
                 [sg.Text('Name', background_color='#0a0f14')],
@@ -546,6 +574,6 @@ try:
 except FileNotFoundError:
     print('Settings file not found')
 except Exception as c:
-    print(c)
     logging.fatal(traceback.format_exc())
+    print(traceback.format_exc())
 
