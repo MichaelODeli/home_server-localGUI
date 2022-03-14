@@ -1,6 +1,9 @@
-current_version_client = '0.6'
+current_version_client = '0.6f'
 import logging
-logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = u'home-server.log')
+import os
+g = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')+'/'
+logfile = g + u'home-server.log'
+logging.basicConfig(format = u'%(levelname)-s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = logfile)
 logging.info(' ')
 logging.info('main-app; App launched.')
 logging.info('main-app; Logging module imported.')
@@ -8,7 +11,6 @@ try:
     import PySimpleGUI as sg
     import psutil
     import traceback
-    import os
     try:
         os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
     except:
@@ -41,8 +43,9 @@ try:
     # filemanager
 
     def isVideoIDExist(id):
+        g = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')+'/'
         cfg = configparser.ConfigParser()
-        with open('settings.ini', 'r', encoding='utf-8') as fp:
+        with open(g+'settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         if cfg.has_option('prefixes', id[0])==True:
             categ = cfg.get('prefixes', id[0])
@@ -56,8 +59,9 @@ try:
         else: 
             return False
     def getLinkId(id):
+        g = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')+'/'
         cfg = configparser.ConfigParser()
-        with open('settings.ini', 'r', encoding='utf-8') as fp:
+        with open(g+'settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         # wayConf = cfg.get('settings', 'way')
         wayConf = cfg.get('links', 'webdir')+'storage/'
@@ -67,7 +71,7 @@ try:
             wayParam = categ + 'folder'
             wayConf = wayConf + cfg.get('settings', wayParam)+'/'
             libName = cfg.get('libs', categ)
-            with open(libName, 'r', encoding='utf-8') as fp:
+            with open(g+libName, 'r', encoding='utf-8') as fp:
                 cfg.read_file(fp)
             if cfg.has_option(categ, id)==True:
                 fullway = wayConf + cfg.get(categ, id)
@@ -78,8 +82,9 @@ try:
             return False # check usage!
     
     def searchById(id):
+        g = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')+'/'
         cfg = configparser.ConfigParser()
-        with open('settings.ini', 'r', encoding='utf-8') as fp:
+        with open(g+'settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         wayConf = cfg.get('settings', 'way')
         if cfg.has_option('prefixes', id[0]):
@@ -87,7 +92,7 @@ try:
             wayParam = categ + 'folder'
             wayConf = wayConf + cfg.get('settings', wayParam)
             libName = cfg.get('libs', categ)
-            with open(libName, 'r', encoding='utf-8') as fp:
+            with open(g+libName, 'r', encoding='utf-8') as fp:
                 cfg.read_file(fp)
             if cfg.has_option(categ, id)==True:
                 return [
@@ -97,18 +102,20 @@ try:
                 return [['Not found']]
 
     def confReaderOptions(name, type):
+        g = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')+'/'
         if type == 'keywords':
             cats = 'keywords'
         if type == 'filename' or type == 'channel' or type == 'all':
             cats = name.replace('storageLib_', '').replace('.ini', '').lower()
         cfg = configparser.ConfigParser()
-        with open(name, 'r', encoding='utf-8') as fp:
+        with open(g+name, 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         return(cfg.items(cats, raw=True))
 
     def search(filename, type):
+        g = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')+'/'
         cfg = configparser.ConfigParser()
-        with open('settings.ini', 'r', encoding='utf-8') as fp:
+        with open(g+'settings.ini', 'r', encoding='utf-8') as fp:
             cfg.read_file(fp)
         filename = filename.lower().replace(' ', '-')
         libNames = cfg.items('libs')
@@ -160,7 +167,7 @@ try:
     sg.theme('DarkGray14Edit')
     #update feature
     cfg = configparser.ConfigParser()
-    with open('settings.ini', 'r', encoding='utf-8') as fp:
+    with open(g+'settings.ini', 'r', encoding='utf-8') as fp:
         cfg.read_file(fp)
     try:
         filed = requests.get(cfg.get('links', 'githubdir'))
@@ -181,7 +188,7 @@ try:
         for lib in liblist:
             filenam = lib.split('/')[-1]
             try:
-                with open(filenam, 'r', encoding='utf-8') as fpe:
+                with open(g+filenam, 'r', encoding='utf-8') as fpe:
                     texted = fpe.read()
                 if requests.get(lib).text.split() == texted.split():
                     pass
@@ -192,7 +199,7 @@ try:
         if todownload != []:
             for naming in todownload:
                 libname = naming.split('/')[-1]
-                f = open(libname, 'w', encoding='utf-8')
+                f = open(g+libname, 'w', encoding='utf-8')
                 texting = requests.get(naming).text
                 f.write(texting)
                 f.close()
@@ -571,8 +578,6 @@ try:
                     break
     window.close()
     logging.info('main-window; user close')
-except FileNotFoundError:
-    print('Settings file not found')
 except Exception as c:
     logging.fatal(traceback.format_exc())
     print(traceback.format_exc())
